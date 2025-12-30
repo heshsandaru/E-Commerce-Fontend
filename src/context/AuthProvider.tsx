@@ -1,5 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
+import apiClient, { setHeader } from "../services/apiClient";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -25,8 +26,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   useEffect(() => {
-    setHeader
-  }), [accessToken])
+    setHeader(accessToken);
+  }, [accessToken]); 
+useEffect(() => {
+    const tryRefresh = async () => {
+      try {
+        const result = await apiClient.post("/auth/refresh-token")
+        setAccessToken(result.data.accessToken)
+        setIsLoggedIn(true)
+        setRole(result.data.role || "user") // expects backend to return role
+
+        const currentPath = window.location.pathname
+        if (currentPath === "/login" || currentPath === "/signup" || currentPath === "/") {
+          router.navigate("/dashboard")
+        }
+      } catch (error) {
+        setAccessToken("")
+        setIsLoggedIn(false)
+        setRole("user")
+      } finally {
+        setIsAuthenticating(false)
+      }
+    }
+
+    tryRefresh()
+  }, [])
 
   
 
