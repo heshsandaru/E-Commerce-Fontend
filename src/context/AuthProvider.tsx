@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 interface AuthProviderProps {
@@ -23,6 +23,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAccessToken("");
     setRole("user");
   }
+
+  useEffect(() => {
+    setHeader
+  }), [accessToken])
 
   
 
